@@ -10,9 +10,12 @@
     "minimum-stability": "stable",
     "require": {
         "silex/silex": "1.1.*",
+        "doctrine/dbal": "2.4.*",
+        "monolog/monolog": "1.7.*",
         "endroid/twitter": "1.1.*",
-        "igorw/config-service-provider": "1.2.*",
-        "deralex/yaml-config-service-provider": "1.0.*@dev"
+        "deralex/yaml-config-service-provider": "1.0.*@dev",
+        "twig/twig": "1.15.*",
+        "geocoder-php/geocoder-service-provider": "0.1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
