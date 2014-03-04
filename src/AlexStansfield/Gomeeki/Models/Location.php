@@ -12,6 +12,11 @@ class Location
     protected $db;
 
     /**
+     * @var integer
+     */
+    protected $locationId;
+
+    /**
      * @var string
      */
     protected $name;
@@ -31,18 +36,30 @@ class Location
      */
     protected $lastTwitterSearch;
 
-    public function __construct(Connection $db, array $data = null)
+    /**
+     * @var array
+     */
+    protected $fields = array('locationId', 'name', 'longitude', 'latitude', 'lastTwitterSearch');
+
+    /**
+     * @param Connection $db
+     * @param array $data
+     */
+    public function __construct(Connection $db, array $data)
     {
         $this->db = $db;
-        $fields = array('name', 'longitude', 'latitude', 'lastTwitterSearch');
 
-        if (! is_null($data)) {
-            foreach ($fields as $field) {
-                if (isset($data[$field])) {
-                    $this->$field = $data[$field];
-                }
+        // Take the data and put it into the properties
+        foreach ($this->fields as $field) {
+            if (isset($data[$field])) {
+                $this->$field = $data[$field];
             }
         }
+    }
+
+    public function getLocationId()
+    {
+        return $this->locationId;
     }
 
     /**
@@ -86,6 +103,18 @@ class Location
     }
 
     /**
+     * Calculate the number of seconds since the last twitter search
+     *
+     * @return int
+     */
+    public function getSecondsSinceLastTwitterSearch()
+    {
+        $lastUpdate = strtotime($this->lastTwitterSearch);
+
+        return time() - $lastUpdate;
+    }
+
+    /**
      * Updates the lastTwitterSearch datetime
      *
      * @return Location
@@ -93,14 +122,13 @@ class Location
      */
     public function updateTwitterSearch()
     {
-        date_default_timezone_set ('UTC');
         $datetime = date('Y-m-d H:i:s');
 
         // Update the date time of last twitter search
         try {
             $result = $this->db->update('location',
                 array('lastTwitterSearch' => $datetime),
-                array('name' => $this->db->quote($this->name))
+                array('locationId' => $this->locationId)
             );
         } catch (\Doctrine\DBAL\DBALException $e) {
             $result = false;
@@ -127,7 +155,7 @@ class Location
     {
         // Create query to find the location
         $query = $db->createQueryBuilder();
-        $query->select()
+        $query->select('l.*')
             ->from('location', 'l')
             ->where('l.name = :name')
             ->setParameter('name', $name);
@@ -136,11 +164,11 @@ class Location
         $stmt = $query->execute();
 
         // Fetch the result as an associative array
-        $data = $stmt->fetchAssoc();
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        // Throw an exception if not found
+        // Return null if not found
         if (! $data) {
-            throw new \Exception('Location "' . $name . '" not found');
+            return;
         }
 
         // Return the location
@@ -173,6 +201,9 @@ class Location
         if ($result != 1) {
             throw new \Exception('Failed to create location "' . $name . '"');
         }
+
+        // Get the Primary Key
+        $data['locationId'] = $db->lastInsertId();
 
         // Return the location object
         return new self($db, $data);

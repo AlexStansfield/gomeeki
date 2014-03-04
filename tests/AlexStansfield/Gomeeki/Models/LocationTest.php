@@ -12,11 +12,13 @@ class LocationTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->mockConnection = \Mockery::mock('\Doctrine\DBAL\Connection');
+        parent::setUp();
     }
 
     protected function getTestData()
     {
         $locationData = array(
+            'locationId' => 1,
             'name' => 'Test Name',
             'longitude' => 50.1234,
             'latitude' => -50.1234,
@@ -24,6 +26,13 @@ class LocationTest extends \PHPUnit_Framework_TestCase
         );
 
         return $locationData;
+    }
+
+    public function testGetLocationId()
+    {
+        $location = new Location($this->mockConnection, $this->getTestData());
+
+        $this->assertSame(1, $location->getLocationId());
     }
 
     public function testGetName()
@@ -54,6 +63,17 @@ class LocationTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('2014-03-01 12:34:56', $location->getLastTwitterSearch());
     }
 
+    public function testGetSecondsSinceLastTwitterSearch()
+    {
+        $difference = 200;
+
+        $data = $this->getTestData();
+        $data['lastTwitterSearch'] = date('Y-m-d H:i:s', time()-$difference);
+        $location = new Location($this->mockConnection, $data);
+
+        $this->assertSame($difference, $location->getSecondsSinceLastTwitterSearch());
+    }
+
     public function testFindByName()
     {
         $name = 'test';
@@ -62,7 +82,7 @@ class LocationTest extends \PHPUnit_Framework_TestCase
 
         // Setup the mock sql statement
         $mockStmt = \Mockery::mock('\Doctrine\DBAL\Driver\Statement');
-        $mockStmt->shouldReceive('fetchAssoc')->once()->andReturn($testData);
+        $mockStmt->shouldReceive('fetch')->once()->with(\PDO::FETCH_ASSOC)->andReturn($testData);
 
         // Setup the mock Query Builder
         $mockQB = \Mockery::mock('\Doctrine\DBAL\Query\QueryBuilder');
@@ -88,21 +108,31 @@ class LocationTest extends \PHPUnit_Framework_TestCase
         $latitude = 12.3456;
         $longitude = 65.4321;
 
-        $data = array('name' => $name, 'latitude' => $latitude, 'longitude' => $longitude);
-        $expected = new Location($this->mockConnection, $data);
+        // Setup expected Result
+        $expected_data = array(
+            'locationId' => 999,
+            'name' => $name,
+            'latitude' => $latitude,
+            'longitude' => $longitude
+        );
+        $expected = new Location($this->mockConnection, $expected_data);
 
         // Setup the mock Connection
         $this->mockConnection
             ->shouldReceive('insert')
             ->once()
-            ->with('location', $data)
+            ->with('location', array('name' => $name, 'latitude' => $latitude, 'longitude' => $longitude))
             ->andReturn(1);
+
+        $this->mockConnection
+            ->shouldReceive('lastInsertId')
+            ->once()
+            ->andReturn(999);
 
         $location = Location::create($name, $latitude, $longitude, $this->mockConnection);
 
         $this->assertEquals($expected, $location);
     }
-
 
     public function testCreateThrowsExceptionIfLocationInsertFails()
     {
@@ -111,7 +141,6 @@ class LocationTest extends \PHPUnit_Framework_TestCase
         $longitude = 65.4321;
 
         $data = array('name' => $name, 'latitude' => $latitude, 'longitude' => $longitude);
-        $expected = new Location($this->mockConnection, $data);
 
         // Setup the mock Connection
         $this->mockConnection
@@ -121,7 +150,7 @@ class LocationTest extends \PHPUnit_Framework_TestCase
             ->andReturn(false);
 
         $this->setExpectedException('Exception');
-        $location = Location::create($name, $latitude, $longitude, $this->mockConnection);
+        Location::create($name, $latitude, $longitude, $this->mockConnection);
     }
 
     public function testUpdateTwitterSearch()
@@ -129,12 +158,6 @@ class LocationTest extends \PHPUnit_Framework_TestCase
         $location = new Location($this->mockConnection, $this->getTestData());
 
         // Setup the mock Connection
-        $this->mockConnection
-            ->shouldReceive('quote')
-            ->once()
-            ->with($location->getName())
-            ->andReturn($location->getName());
-
         $this->mockConnection
             ->shouldReceive('update')
             ->once()
@@ -149,13 +172,6 @@ class LocationTest extends \PHPUnit_Framework_TestCase
     {
         $location = new Location($this->mockConnection, $this->getTestData());
 
-        // Setup the mock Connection
-        $this->mockConnection
-            ->shouldReceive('quote')
-            ->once()
-            ->with($location->getName())
-            ->andReturn($location->getName());
-
         $this->mockConnection
             ->shouldReceive('update')
             ->once()
@@ -164,5 +180,4 @@ class LocationTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('Exception');
         $location->updateTwitterSearch();
     }
-
 }
