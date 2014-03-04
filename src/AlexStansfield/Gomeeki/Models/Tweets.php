@@ -115,7 +115,7 @@ class Tweets
     protected function parseTweets(Location $location, array $tweets)
     {
         $data = array();
-        foreach ($tweets as $tweet){
+        foreach ($tweets as $tweet) {
             $tmpTweet = array();
             $tmpTweet['locationId'] = $location->getLocationId();
             $tmpTweet['user'] = $tweet['user']['screen_name'];

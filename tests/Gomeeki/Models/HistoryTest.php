@@ -1,6 +1,7 @@
 <?php
 
-use AlexStansfield\GoMeeki\Models\Location;
+namespace AlexStansfield\Tests\Gomeeki\Models;
+
 use AlexStansfield\GoMeeki\Models\History;
 
 class HistoryTest extends \PHPUnit_Framework_TestCase
@@ -39,5 +40,4 @@ class HistoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->history->add($sessionId, $mockLocation));
     }
-
 }

@@ -1,5 +1,7 @@
 <?php
 
+namespace AlexStansfield\Tests\Gomeeki\Models;
+
 use AlexStansfield\GoMeeki\Models\Location;
 
 class LocationTest extends \PHPUnit_Framework_TestCase

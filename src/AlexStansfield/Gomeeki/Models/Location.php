@@ -126,7 +126,8 @@ class Location
 
         // Update the date time of last twitter search
         try {
-            $result = $this->db->update('location',
+            $result = $this->db->update(
+                'location',
                 array('lastTwitterSearch' => $datetime),
                 array('locationId' => $this->locationId)
             );
@@ -151,7 +152,7 @@ class Location
      * @return Location
      * @throws \Exception
      */
-    static public function findByName($name, Connection $db)
+    public static function findByName($name, Connection $db)
     {
         // Create query to find the location
         $query = $db->createQueryBuilder();
@@ -186,7 +187,7 @@ class Location
      * @return Location
      * @throws \Exception
      */
-    static public function create($name, $latitude, $longitude, Connection $db)
+    public static function create($name, $latitude, $longitude, Connection $db)
     {
         $data = array('name' => $name, 'latitude' => $latitude, 'longitude' => $longitude);
 

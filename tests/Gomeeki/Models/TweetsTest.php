@@ -1,5 +1,7 @@
 <?php
 
+namespace AlexStansfield\Tests\Gomeeki\Models;
+
 use AlexStansfield\Gomeeki\Models\Tweets;
 
 class TweetsTest extends \PHPUnit_Framework_TestCase
@@ -180,6 +182,4 @@ class TweetsTest extends \PHPUnit_Framework_TestCase
         $tweets = new Tweets($this->mockConnection, $this->mockTwitter);
         $this->assertSame($expected, $tweets->getTweets($mockLocation));
     }
-
-
 }
