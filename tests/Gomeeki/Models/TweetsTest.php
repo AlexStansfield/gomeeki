@@ -163,7 +163,7 @@ class TweetsTest extends \PHPUnit_Framework_TestCase
 
         // Setup the mock sql statement
         $mockStmt = \Mockery::mock('\Doctrine\DBAL\Driver\Statement');
-        $mockStmt->shouldReceive('fetch')->once()->with(\PDO::FETCH_ASSOC)->andReturn($expected);
+        $mockStmt->shouldReceive('fetchAll')->once()->with(\PDO::FETCH_ASSOC)->andReturn($expected);
 
         // Setup the mock Query Builder
         $mockQB = \Mockery::mock('\Doctrine\DBAL\Query\QueryBuilder');

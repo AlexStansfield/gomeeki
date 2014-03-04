@@ -74,7 +74,7 @@ class Tweets
         $stmt = $query->execute();
 
         // Fetch the result as an associative array
-        $tweets = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $tweets = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         return $tweets;
     }
