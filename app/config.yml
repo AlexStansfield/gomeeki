@@ -1,0 +1,15 @@
+doctrine:
+    dbal:
+        driver:   pdo_sqlite
+        user:
+        password:
+        path:     "../data.sqlite"
+
+twitter:
+    api_key:        "3AGT5Za4RtDv6qD9Uq5Kgg"
+    api_secret:     "7H5pyaQOylFHbhqB5j9vkHB8EPSovP7zXxY7x0mrw"
+    access_token:   "12815182-ism0ZY0tgiE2BjTJQFRGj87A4OpmSYw7pAUSrMkJi"
+    access_secret:  "CJymAioMMLZqOZ3rma6TX1oGFBvs4ky2PZqWBFQeRMyLO"
+
+app:
+    twitter_refresh:  3600
