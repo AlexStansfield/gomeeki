@@ -121,8 +121,8 @@ class Tweets
             $tmpTweet['user'] = $tweet['user']['screen_name'];
             $tmpTweet['profileImageUrl'] = $tweet['user']['profile_image_url'];
             $tmpTweet['content'] = $tweet['text'];
-            $tmpTweet['latitude'] = $tweet['coordinates']['coordinates'][0];
-            $tmpTweet['longitude'] = $tweet['coordinates']['coordinates'][1];
+            $tmpTweet['latitude'] = $tweet['coordinates']['coordinates'][1];
+            $tmpTweet['longitude'] = $tweet['coordinates']['coordinates'][0];
             $tmpTweet['posted'] = date('Y-m-d H:i:s', strtotime($tweet['created_at']));
             $data[] = $tmpTweet;
         }

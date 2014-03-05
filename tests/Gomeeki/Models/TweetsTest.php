@@ -70,7 +70,7 @@ class TweetsTest extends \PHPUnit_Framework_TestCase
                 "id_str" => "idstring1",
                 "created_at" => "Mon Sep 24 04:46:45 +0000 2012",
                 "text" => "test 1",
-                "coordinates" => array('coordinates' => array(12.3456, 65.4321)),
+                "coordinates" => array('coordinates' => array(65.4321, 12.3456)),
                 "user" => array(
                     "id" => 123456,
                     "screen_name" => "@tweetmaster",
@@ -81,7 +81,7 @@ class TweetsTest extends \PHPUnit_Framework_TestCase
                 "id_str" => "idstring2",
                 "created_at" => "Mon Sep 24 03:35:21 +0000 2012",
                 "text" => "test 2",
-                "coordinates" => array('coordinates' => array(65.4321, 12.3456)),
+                "coordinates" => array('coordinates' => array(12.3456, 65.4321)),
                 "user" => array(
                     "id" => 654321,
                     "screen_name" => "@testtweeter",
