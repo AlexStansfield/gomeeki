@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gomeeki Mini Project</title>
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css">
+
+    <style>
+        html, body, #map-canvas, #main {
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #map-canvas {
+            height: 90%;
+        }
+
+        #search, .row {
+            height: 10%;
+        }
+    </style>
+
+</head>
+<body>
+
+<div id="main">
+    <div id="map-canvas"></div>
+    <!-- Columns start at 50% wide on mobile and bump up to 33.3% wide on desktop -->
+    <div class="row">
+        <div class="col-xs-6 col-md-4"><input type="text" class="form-control" placeholder="Text input"></div>
+        <div class="col-xs-6 col-md-4"></div>
+        <div class="col-xs-6 col-md-4"></div>
+    </div>
+</div>
+
+<script>
+    var latitude = {{ location.getLatitude() }};
+    var longitude = {{ location.getLongitude() }};
+    var tweets = [
+        {% for tweet in tweets %}
+        ['{{ tweet.user }}','{{ tweet.profileImageUrl }}','{{ tweet.latitude }}','{{ tweet.longitude }}','{{ tweet.content|raw|e('js') }}<br/>When: {{ tweet.posted }}'],
+        {% endfor %} ];
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+<script src="/js/googleMap.js"></script>
+</body>
+</html>

@@ -11,12 +11,6 @@ class SearchController
 {
     public function indexAction(Request $request, Application $app, $locationName)
     {
-        /*
-        return $app['twig']->render('history.twig', array(
-            'name' => 'test',
-        ));
-        */
-
         // Find location by name
         if (! $location = Location::findByName($locationName, $app['db'])) {
             $geocode = $app['geocoder']->geocode($locationName);
@@ -36,6 +30,7 @@ class SearchController
             $tweets = $tweetsService->getTweets($location);
         }
 
-        return $app->json($tweets);
+        //return $app->json($tweets);
+        return $app['twig']->render('search.twig', array('location' => $location, 'tweets' => $tweets));
     }
 }

@@ -11,7 +11,7 @@
          bootstrap="tests/bootstrap.php"
         >
     <testsuites>
-        <testsuite name="YourApp Test Suite">
+        <testsuite name="Gomeeki Test Suite">
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>
