@@ -4,6 +4,10 @@ namespace AlexStansfield\Gomeeki\Models;
 
 use Doctrine\DBAL\Connection;
 
+/**
+ * Class Location
+ * @package AlexStansfield\Gomeeki\Models
+ */
 class Location
 {
     /**
@@ -122,6 +126,7 @@ class Location
      */
     public function updateTwitterSearch()
     {
+        // Get the current time stamp in sql datetime format
         $datetime = date('Y-m-d H:i:s');
 
         // Update the date time of last twitter search
@@ -154,6 +159,9 @@ class Location
      */
     public static function findByName($name, Connection $db)
     {
+        // To make sure we don't get duplicate locations when people use or don't use capitals
+        $name = strtolower($name);
+
         // Create query to find the location
         $query = $db->createQueryBuilder();
         $query->select('l.*')
@@ -189,7 +197,8 @@ class Location
      */
     public static function create($name, $latitude, $longitude, Connection $db)
     {
-        $data = array('name' => $name, 'latitude' => $latitude, 'longitude' => $longitude);
+        // Setup the data to insert, change name to lower case to help avoid dupes
+        $data = array('name' => strtolower($name), 'latitude' => $latitude, 'longitude' => $longitude);
 
         // Insert the location
         try {

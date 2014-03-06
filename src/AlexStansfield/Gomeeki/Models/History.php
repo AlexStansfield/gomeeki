@@ -4,6 +4,10 @@ namespace AlexStansfield\Gomeeki\Models;
 
 use Doctrine\DBAL\Connection;
 
+/**
+ * Class History
+ * @package AlexStansfield\Gomeeki\Models
+ */
 class History
 {
     /**
@@ -29,6 +33,7 @@ class History
      */
     public function add($sessionId, Location $location)
     {
+        // Setup the data to be inserted
         $data = array('sessionId' => $sessionId, 'locationId' => $location->getLocationId());
 
         // Insert the history
@@ -47,7 +52,7 @@ class History
     }
 
     /**
-     * Fetch the distinct history
+     * Fetch the distinct history in most recent search order
      *
      * @param $sessionId
      * @return array

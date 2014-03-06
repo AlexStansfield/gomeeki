@@ -166,7 +166,7 @@ class LocationTest extends \PHPUnit_Framework_TestCase
             ->andReturn(1);
 
         $this->assertSame('2014-03-01 12:34:56', $location->getLastTwitterSearch());
-        $this->assertInstanceOf('\AlexStansfield\Gomeeki\Models\Location', $location->updateTwitterSearch());
+        $this->assertInstanceOf('AlexStansfield\Gomeeki\Models\Location', $location->updateTwitterSearch());
         $this->assertSame(date('Y-m-d H:i:s'), $location->getLastTwitterSearch());
     }
 
