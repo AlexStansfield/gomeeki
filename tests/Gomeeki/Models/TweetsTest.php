@@ -41,7 +41,7 @@ class TweetsTest extends \PHPUnit_Framework_TestCase
 
         // setup mock location
         $mockLocation = \Mockery::mock('AlexStansfield\GoMeeki\Models\Location');
-        $mockLocation->shouldReceive('getName')->once()->andReturn('test');
+        $mockLocation->shouldReceive('getName')->twice()->andReturn('test');
         $mockLocation->shouldReceive('getLatitude')->once()->andReturn(12.3456);
         $mockLocation->shouldReceive('getLongitude')->once()->andReturn(65.4321);
 
@@ -54,7 +54,7 @@ class TweetsTest extends \PHPUnit_Framework_TestCase
             ->shouldReceive('query')
             ->once()
             ->with('search/tweets', 'GET', 'json', array(
-                'q' => 'test',
+                'q' => '"test" OR #test',
                 'geocode' => '12.3456,65.4321,50km',
                 'count' => 100))
             ->andReturn($mockResponse);

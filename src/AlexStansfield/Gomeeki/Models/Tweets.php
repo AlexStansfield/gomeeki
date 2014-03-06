@@ -5,6 +5,10 @@ namespace AlexStansfield\Gomeeki\Models;
 use \Doctrine\DBAL\Connection;
 use \Endroid\Twitter\Twitter;
 
+/**
+ * Class Tweets
+ * @package AlexStansfield\Gomeeki\Models
+ */
 class Tweets
 {
     /**
@@ -37,7 +41,7 @@ class Tweets
     {
         // Build the search params
         $params = array(
-            'q' => $location->getName(),
+            'q' => '"' . $location->getName() . '" OR #' . str_replace(' ', '', $location->getName()),
             'geocode' => $location->getLatitude() . ',' . $location->getLongitude() . ',50km',
             'count' => 100
         );
