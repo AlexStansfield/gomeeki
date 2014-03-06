@@ -1,5 +1,6 @@
 var map;
 
+// Initialize the map
 function initialize() {
     var mapOptions = {
         zoom: 11,
@@ -15,6 +16,7 @@ function initialize() {
     setTweets(map, tweets, infowindow);
 }
 
+// Add the tweets to the map
 function setTweets(map, tweets, infowindow) {
     for (var i = 0; i < tweets.length; i++) {
         var tweet = tweets[i];
@@ -34,12 +36,25 @@ function setTweets(map, tweets, infowindow) {
     }
 }
 
+// Do a search when form submitted (either by pressing enter in input or clicking search)
 $("#formSearch").submit(function() {
     window.location.href = '/search/' + $("#inputSearch").val();
     return false;
 });
+// Go to history page when button pressed
 $("#buttonHistory").click(function() {
     window.location.href = '/history';
 });
 
+// Resize the map canvas according to form height
+$(window).resize(function(){
+    var rowHeight = $(".row").height();
+    var mapHeight = $(window).height() - rowHeight;
+
+    $('#map-container').height(mapHeight);
+})
+
 google.maps.event.addDomListener(window, 'load', initialize);
+
+// Trigger the window resize
+$(window).resize();
