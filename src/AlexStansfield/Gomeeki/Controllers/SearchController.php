@@ -20,9 +20,17 @@ class SearchController
         if (! $location = Location::findByName($locationName, $app['db'])) {
             try {
                 $geocode = $app['geocoder']->geocode($locationName);
-                $location = Location::create($locationName, $geocode->getLatitude(), $geocode->getLongitude(), $app['db']);
+                $location = Location::create(
+                    $locationName,
+                    $geocode->getLatitude(),
+                    $geocode->getLongitude(),
+                    $app['db']
+                );
             } catch (\Exception $e) {
-                return $app['twig']->render('search.twig', array('error' => 'Location "' . $locationName . '" not found'));
+                return $app['twig']->render(
+                    'search.twig',
+                    array('error' => 'Location "' . $locationName . '" not found')
+                );
             }
         }
 

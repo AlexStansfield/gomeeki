@@ -40,4 +40,33 @@ class HistoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->history->add($sessionId, $mockLocation));
     }
+
+    public function testFetch()
+    {
+        $sessionId = 'testSessionId';
+        $expected = array(array('name' => 'test 1'), array('name' => 'test 2'));
+
+        // Setup the mock sql statement
+        $mockStmt = \Mockery::mock('\Doctrine\DBAL\Driver\Statement');
+        $mockStmt->shouldReceive('fetchAll')->once()->with(\PDO::FETCH_ASSOC)->andReturn($expected);
+
+        // Setup the mock Query Builder
+        $mockQB = \Mockery::mock('\Doctrine\DBAL\Query\QueryBuilder');
+        $mockQB->shouldReceive('select')->once()->andReturn($mockQB);
+        $mockQB->shouldReceive('from')->once()->andReturn($mockQB);
+        $mockQB->shouldReceive('join')->once()->andReturn($mockQB);
+        $mockQB->shouldReceive('where')->once()->andReturn($mockQB);
+        $mockQB->shouldReceive('setParameter')->with('sessionId', $sessionId)->once()->andReturn($mockQB);
+        $mockQB->shouldReceive('groupBy')->once()->andReturn($mockQB);
+        $mockQB->shouldReceive('orderBy')->once()->andReturn($mockQB);
+        $mockQB->shouldReceive('execute')->once()->andReturn($mockStmt);
+
+        // Setup the mock Connection
+        $this->mockConnection
+            ->shouldReceive('createQueryBuilder')
+            ->once()
+            ->andReturn($mockQB);
+
+        $this->assertEquals($expected, $this->history->fetch($sessionId));
+    }
 }

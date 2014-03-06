@@ -79,9 +79,11 @@ class Tweets
      */
     public function getTweets(Location $location)
     {
+        $columns = 't.tweetId, t.locationId, t.user, t.profileImageUrl, t.content, t.latitude, t.longitude, t.posted';
+
         // Create query to find the location
         $query = $this->db->createQueryBuilder();
-        $query->select('t.tweetId, t.locationId, t.user, t.profileImageUrl, t.content, t.latitude, t.longitude, t.posted')
+        $query->select($columns)
             ->from('tweet', 't')
             ->where('t.locationId = :locationId')
             ->setParameter('locationId', $location->getLocationId());
