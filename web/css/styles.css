@@ -1,0 +1,43 @@
+html, body, .container {
+    height: 100%;
+    width: 100%;
+    padding: 0px;
+}
+
+#map-canvas {
+    height: 100%;
+}
+
+#map-container {
+    height: 90%;
+    max-height: 100%;
+}
+
+#searchRow {
+    max-height: 10%;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.col-md-6, .container {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+#listHistory {
+    width: 100%;
+    list-style: none;
+    padding: 0px;
+}
+
+#listHistory li {
+    border-bottom: 1px solid #428bca;
+}
+
+#listHistory li a {
+    text-transform: uppercase;
+    display: block;
+    padding: 0.4em 1.6em;
+    text-decoration: none;
+    color: black;
+}

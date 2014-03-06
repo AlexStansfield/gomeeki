@@ -13,3 +13,4 @@ twitter:
 
 app:
     twitter_refresh:  3600
+    twitter_distance: "50km"

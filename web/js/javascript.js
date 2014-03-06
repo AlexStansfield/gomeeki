@@ -34,4 +34,12 @@ function setTweets(map, tweets, infowindow) {
     }
 }
 
+$("#formSearch").submit(function() {
+    window.location.href = '/search/' + $("#inputSearch").val();
+    return false;
+});
+$("#buttonHistory").click(function() {
+    window.location.href = '/history';
+});
+
 google.maps.event.addDomListener(window, 'load', initialize);

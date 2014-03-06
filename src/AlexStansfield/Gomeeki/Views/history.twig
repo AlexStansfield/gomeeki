@@ -1,27 +1,10 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Gomeeki Mini Project</title>
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css">
+{% extends "layout.twig" %}
 
-    <style>
-        html, body, #main {
-            height: 100%;
-            margin: 0px;
-            padding: 0px;
-        }
-    </style>
-</head>
-<body>
-    <div id="main">
-        <ul>
-            <li><a href="javascript:history.back()">&lt; BACK TO THE TWEETS</a></li>
+{% block content %}
+        <ul id="listHistory">
+            <li><a href="javascript:history.back()">&lt; Back to the Tweets!</a></li>
 {% for location in history %}
-            <li><a href="/search/{{ location.name }}">{{ location.name|upper }}</a></li>
+            <li><a href="/search/{{ location.name }}">{{ location.name }}</a></li>
 {% endfor %}
         </ul>
-    </div>
-</body>
-</html>
+{% endblock %}
