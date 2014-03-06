@@ -17,21 +17,30 @@ use Symfony\Component\HttpFoundation\Response;
 $app = new Application();
 $app['debug'] = true;
 
-// Register Providers
+//-- Register Providers
+// Log, just turn it on for debug mode
+if ($app['debug']) {
+    $app->register(new MonologServiceProvider(), array(
+        'monolog.logfile' => __DIR__.'/development.log',
+    ));
+}
+// Configuration file
 $app->register(new YamlConfigServiceProvider(__DIR__ . '/config.yml'));
+// Sessions
 $app->register(new SessionServiceProvider());
+// Doctrine DBAL (database)
 $app->register(new DoctrineServiceProvider(), array(
     'db.options' => $app['config']['doctrine']['dbal']
 ));
+// Twig Templates
 $app->register(new TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/../src/AlexStansfield/Gomeeki/Views',
 ));
-$app->register(new MonologServiceProvider(), array(
-    'monolog.logfile' => __DIR__.'/development.log',
-));
+// Geocoder
 $app->register(new GeocoderServiceProvider());
 
-// Register Services
+//-- Register Services
+// Twitter API
 $app['twitter'] = function (Application $app) {
     return new Twitter(
         $app['config']['twitter']['api_key'],
@@ -40,9 +49,11 @@ $app['twitter'] = function (Application $app) {
         $app['config']['twitter']['access_secret']
     );
 };
+// Our History service
 $app['history'] = function (Application $app) {
     return new History($app['db']);
 };
+// Provider for the Geocoder (Google Maps)
 $app['geocoder.provider'] = $app->share(function ($app) {
     return new GoogleMapsProvider($app['geocoder.adapter']);
 });
@@ -56,9 +67,10 @@ $app->get('/', function (Application $app) {
 });
 $app->get('/history', 'AlexStansfield\Gomeeki\Controllers\HistoryController::indexAction');
 $app->get('/search', 'AlexStansfield\Gomeeki\Controllers\SearchController::indexAction');
+$app->get('/search/', 'AlexStansfield\Gomeeki\Controllers\SearchController::indexAction');
 $app->get('/search/{locationName}', 'AlexStansfield\Gomeeki\Controllers\SearchController::searchAction');
 
-// Setup the error handler
+// Setup the error handling
 $app->error(function (\Exception $e, $code) use ($app) {
     // If we're in debug mode than fall back to debug error handler
     if ($app['debug']) {

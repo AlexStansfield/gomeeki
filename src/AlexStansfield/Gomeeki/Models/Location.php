@@ -61,6 +61,11 @@ class Location
         }
     }
 
+    /**
+     * Get the Location ID
+     *
+     * @return int
+     */
     public function getLocationId()
     {
         return $this->locationId;
@@ -137,9 +142,13 @@ class Location
                 array('locationId' => $this->locationId)
             );
         } catch (\Doctrine\DBAL\DBALException $e) {
-            $result = false;
+            // In a larger project we'd have ways to handle these errors properly
+            // This try catch is just to show I understand exception handling
+            // I will just rethrow the original exception now
+            throw $e;
         }
 
+        // If we don't have result of 1 then something went wrong that didn't throw an exception
         if (! $result) {
             throw new \Exception('Failed to update location "' . $this->name . '"');
         }
@@ -204,10 +213,13 @@ class Location
         try {
             $result = $db->insert('location', $data);
         } catch (\Doctrine\DBAL\DBALException $e) {
-            $result = false;
+            // In a larger project we'd have ways to handle these errors properly
+            // This try catch is just to show I understand exception handling
+            // I will just rethrow the original exception now
+            throw $e;
         }
 
-        // If we don't have result of 1 row then something went wrong
+        // If we don't have result of 1 row then something went wrong that didn't throw an exception
         if ($result != 1) {
             throw new \Exception('Failed to create location "' . $name . '"');
         }

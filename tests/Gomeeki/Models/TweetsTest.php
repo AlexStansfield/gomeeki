@@ -47,6 +47,7 @@ class TweetsTest extends \PHPUnit_Framework_TestCase
 
         // setup mock response from twitter
         $mockResponse = \Mockery::mock('\Buzz\Message\Response');
+        $mockResponse->shouldReceive('isSuccessful')->once()->andReturn(true);
         $mockResponse->shouldReceive('getContent')->once()->andReturn($response);
 
         // setup the mock twitter client
@@ -61,6 +62,29 @@ class TweetsTest extends \PHPUnit_Framework_TestCase
 
         $results = $tweets->searchTwitter($mockLocation);
         $this->assertSame($expects, $results);
+    }
+
+    public function testSearchTwitterThrowsExceptionIfResponseIsUnsuccessful()
+    {
+        $tweets = new Tweets($this->mockConnection, $this->mockTwitter);
+
+        // setup mock location
+        $mockLocation = \Mockery::mock('AlexStansfield\GoMeeki\Models\Location');
+        $mockLocation->shouldReceive('getName')->twice()->andReturn('test');
+        $mockLocation->shouldReceive('getLatitude')->once()->andReturn(12.3456);
+        $mockLocation->shouldReceive('getLongitude')->once()->andReturn(65.4321);
+
+        // setup mock response from twitter
+        $mockResponse = \Mockery::mock('\Buzz\Message\Response');
+        $mockResponse->shouldReceive('isSuccessful')->once()->andReturn(false);
+
+        // setup the mock twitter client
+        $this->mockTwitter
+            ->shouldReceive('query')
+            ->andReturn($mockResponse);
+
+        $this->setExpectedException('Exception');
+        $results = $tweets->searchTwitter($mockLocation);
     }
 
     public function testSaveTweets()

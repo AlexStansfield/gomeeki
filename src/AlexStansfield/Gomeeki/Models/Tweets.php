@@ -2,8 +2,8 @@
 
 namespace AlexStansfield\Gomeeki\Models;
 
-use \Doctrine\DBAL\Connection;
-use \Endroid\Twitter\Twitter;
+use Doctrine\DBAL\Connection;
+use Endroid\Twitter\Twitter;
 
 /**
  * Class Tweets
@@ -12,18 +12,18 @@ use \Endroid\Twitter\Twitter;
 class Tweets
 {
     /**
-     * @var \Doctrine\DBAL\Connection
+     * @var Connection
      */
     protected $db;
 
     /**
-     * @var \Endroid\Twitter\Twitter
+     * @var Twitter
      */
     protected $twitter;
 
     /**
-     * @param \Doctrine\DBAL\Connection $db
-     * @param \Endroid\Twitter\Twitter $twitter
+     * @param Connection $db
+     * @param Twitter $twitter
      */
     public function __construct(Connection $db, Twitter $twitter)
     {
@@ -34,22 +34,28 @@ class Tweets
     /**
      * Search Twitter for the given Location
      *
-     * @param \AlexStansfield\Gomeeki\Models\Location $location
-     * @return mixed
+     * @param Location $location
+     * @param string $distance
+     * @param int $count
+     * @return array
+     * @throws \Exception
      */
-    public function searchTwitter(Location $location)
+    public function searchTwitter(Location $location, $distance = '50km', $count = 100)
     {
         // Build the search params
         $params = array(
             'q' => '"' . $location->getName() . '" OR #' . str_replace(' ', '', $location->getName()),
-            'geocode' => $location->getLatitude() . ',' . $location->getLongitude() . ',50km',
-            'count' => 100
+            'geocode' => $location->getLatitude() . ',' . $location->getLongitude() . ',' . $distance,
+            'count' => $count
         );
 
         // Search for the tweets
         $response = $this->twitter->query('search/tweets', 'GET', 'json', $params);
 
-        // todo check response
+        // Check Response is valid
+        if (! ($response && $response->isSuccessful())) {
+            throw new \Exception('Error getting the search results from Twitter');
+        }
 
         // Decode the json into an associative array
         $results = json_decode($response->getContent(), true);
@@ -65,11 +71,17 @@ class Tweets
         return $tweets;
     }
 
+    /**
+     * Get the Tweets from the database
+     *
+     * @param Location $location
+     * @return array
+     */
     public function getTweets(Location $location)
     {
         // Create query to find the location
         $query = $this->db->createQueryBuilder();
-        $query->select('t.*')
+        $query->select('t.tweetId, t.locationId, t.user, t.profileImageUrl, t.content, t.latitude, t.longitude, t.posted')
             ->from('tweet', 't')
             ->where('t.locationId = :locationId')
             ->setParameter('locationId', $location->getLocationId());
@@ -86,7 +98,7 @@ class Tweets
     /**
      * Save the tweets to the database
      *
-     * @param \AlexStansfield\Gomeeki\Models\Location $location
+     * @param Location $location
      * @param array $tweets
      * @return bool
      */
@@ -98,7 +110,7 @@ class Tweets
         // Delete existing tweets for this location
         $this->db->delete('tweet', array('locationId' => $location->getLocationId()));
 
-        // Insert Tweets
+        // Insert Tweets - Doctrine DBAL doesn't support multiple row insert :(
         foreach ($data as $row) {
             $this->db->insert('tweet', $row);
         }
@@ -112,7 +124,7 @@ class Tweets
     /**
      * Parse the raw tweets and return the data ready for the database
      *
-     * @param \AlexStansfield\Gomeeki\Models\Location $location
+     * @param Location $location
      * @param array $tweets
      * @return array
      */

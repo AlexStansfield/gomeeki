@@ -11,12 +11,12 @@ use Doctrine\DBAL\Connection;
 class History
 {
     /**
-     * @var \Doctrine\DBAL\Connection
+     * @var Connection
      */
     protected $db;
 
     /**
-     * @param \Doctrine\DBAL\Connection $db
+     * @param Connection $db
      */
     public function __construct(Connection $db)
     {
@@ -40,10 +40,13 @@ class History
         try {
             $result = $this->db->insert('history', $data);
         } catch (\Doctrine\DBAL\DBALException $e) {
-            $result = false;
+            // In a larger project we'd have ways to handle these errors properly
+            // This try catch is just to show I understand exception handling
+            // I will just rethrow the original exception now
+            throw $e;
         }
 
-        // If we don't have result of 1 row then something went wrong
+        // If we don't have result of 1 row then something went wrong that didn't throw an exception
         if ($result != 1) {
             throw new \Exception('Failed to create history for session ID "' . $sessionId . '"');
         }
