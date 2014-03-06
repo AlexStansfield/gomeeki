@@ -19,7 +19,7 @@ html, body, .container {
     margin-right: 0px;
 }
 
-.col-md-6, .container {
+.col-sm-6 {
     padding-left: 0px;
     padding-right: 0px;
 }
